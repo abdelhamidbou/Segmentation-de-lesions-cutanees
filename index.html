@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESTK - Segmentation IA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #0f172a;
+            --accent-green: #10b981;
+            --light-blue: #334155;
+            --white-soft: #f8fafc;
+            --shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--white-soft); color: var(--primary-blue); }
+        .navbar { background: white; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--primary-blue); text-decoration: none; }
+        .logo span { color: var(--accent-green); }
+        .nav-links { display: flex; gap: 10px; }
+        .nav-links a { text-decoration: none; color: var(--light-blue); padding: 8px 16px; font-weight: 500; transition: 0.3s; border-radius: 8px; }
+        .nav-links a:hover { color: var(--accent-green); background: rgba(16, 185, 129, 0.1); }
+        .header-actions .btn-secondary { background: var(--accent-green); color: white; padding: 8px 16px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; }
+        .hero { height: 60vh; background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(16, 185, 129, 0.2)), url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=2070&auto=format&fit=crop'); background-size: cover; background-position: center; display: flex; align-items: center; color: white; padding: 0 5%; }
+        .hero-text { max-width: 700px; }
+        .hero-text h1 { font-family: 'Outfit', sans-serif; font-size: 3rem; margin-bottom: 1rem; line-height: 1.2; }
+        .hero-text p { font-size: 1.1rem; opacity: 0.9; margin-bottom: 2rem; }
+        .main-container { padding: 4rem 5%; margin-top: -100px; }
+        .ai-card { background: white; border-radius: 20px; padding: 3rem; box-shadow: var(--shadow); max-width: 1000px; margin: 0 auto; text-align: center; }
+        .section-tag { background: rgba(16, 185, 129, 0.1); color: var(--accent-green); padding: 5px 15px; border-radius: 50px; font-weight: 600; font-size: 0.8rem; margin-bottom: 1.5rem; display: inline-block; }
+        .ai-card h2 { font-size: 2rem; margin-bottom: 2rem; color: var(--primary-blue); }
+        .description-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; text-align: left; margin-bottom: 3rem; }
+        .description-text h3 { color: var(--primary-blue); margin-bottom: 10px; font-size: 1.1rem; }
+        .description-text h3 i { color: var(--accent-green); margin-right: 8px; }
+        .description-text p { font-size: 0.95rem; color: var(--light-blue); line-height: 1.6; }
+        .upload-section { border: 2px dashed #cbd5e1; padding: 2.5rem; border-radius: 15px; transition: 0.3s; margin-bottom: 2rem; }
+        .upload-section:hover { border-color: var(--accent-green); background: #f0fdf4; }
+        .btn-main { background: var(--accent-green); color: white; padding: 15px 40px; border-radius: 10px; text-decoration: none; font-weight: 600; border: none; cursor: pointer; font-size: 1rem; transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; }
+        .btn-main:hover { background: #059669; transform: translateY(-2px); }
+        .btn-main:disabled { background: #9ca3af; cursor: not-allowed; transform: none; }
+        .btn-main i { font-size: 1.2rem; }
+        .results-section { display: none; margin-top: 2rem; animation: fadeIn 0.5s ease-in; }
+        .results-section.visible { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .images-container { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+        .image-box { background: var(--white-soft); padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .image-box h3 { color: var(--primary-blue); margin-bottom: 1rem; font-size: 1.1rem; }
+        .image-box img { width: 100%; border-radius: 10px; border: 3px solid var(--accent-green); }
+        .metrics-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 2rem; }
+        .metric-card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-left: 4px solid var(--accent-green); }
+        .metric-label { font-size: 0.85rem; color: var(--light-blue); margin-bottom: 0.5rem; font-weight: 500; }
+        .metric-value { font-size: 2rem; font-weight: 700; color: var(--primary-blue); margin-bottom: 0.3rem; }
+        .metric-desc { font-size: 0.8rem; color: var(--light-blue); }
+        .recommendation { background: linear-gradient(135deg, var(--primary-blue), var(--light-blue)); color: white; padding: 1.5rem; border-radius: 12px; margin-top: 1.5rem; text-align: center; font-weight: 500; }
+        .recommendation i { margin-right: 8px; font-size: 1.2rem; }
+        .loading { display: none; margin: 2rem auto; border: 4px solid #f3f4f6; border-top: 4px solid var(--accent-green); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+        .loading.visible { display: block; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .footer { background: var(--primary-blue); color: white; padding: 3rem 5%; text-align: center; margin-top: 4rem; }
+        .footer-logo { font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; display: block; color: var(--accent-green); }
+        .footer p { opacity: 0.8; font-size: 0.9rem; margin: 0.5rem 0; }
+        .footer p:first-of-type { font-weight: 500; opacity: 0.95; }
+        @media (max-width: 768px) { .hero-text h1 { font-size: 2rem; } .description-grid { grid-template-columns: 1fr; } .images-container { grid-template-columns: 1fr; } .metrics-container { grid-template-columns: 1fr; } .nav-links a { font-size: 0.85rem; } .navbar { padding: 1rem 3%; flex-wrap: wrap; } }
+        .error-message { background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 8px; margin-top: 1rem; display: none; }
+        .error-message.visible { display: block; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#" class="logo">EST<span>K</span></a>
+        <div class="nav-links">
+            <a href="#model">Modèle IA</a>
+            <a href="#description">Description</a>
+        </div>
+        <div class="header-actions">
+            <button class="btn-secondary">EST Khénifra</button>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-text">
+            <h1>Segmentation de lésions cutanées - Cancer de la peau</h1>
+            <p>Projet de module les applications de l'intelligence artificielle</p>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <div class="ai-card">
+            <span class="section-tag">SYSTÈME EXPERT</span>
+            <h2>Analyse de Lésion Cutanée</h2>
+            
+            <div class="description-grid" id="description">
+                <div class="description-text">
+                    <h3><i class="fas fa-microscope"></i> Architecture U-Net</h3>
+                    <p>Notre IA utilise un réseau de neurones convolutifs (U-Net) pour isoler avec précision la zone affectée du reste de la peau saine.</p>
+                </div>
+                <div class="description-text">
+                    <h3><i class="fas fa-shield-virus"></i> Diagnostic Précis</h3>
+                    <p>En extrayant les caractéristiques morphologiques, le système aide à l'identification précoce des anomalies dermatologiques.</p>
+                </div>
+            </div>
+
+            <div class="upload-section" id="model">
+                <input type="file" id="fileInput" hidden accept="image/*">
+                <button id="uploadBtn" class="btn-main">
+                    <i class="fas fa-upload"></i> Choisir une image pour analyse
+                </button>
+                
+                <div class="loading" id="loading"></div>
+                <div class="error-message" id="errorMessage"></div>
+            </div>
+
+            <div class="results-section" id="resultsSection">
+                <div class="images-container">
+                    <div class="image-box">
+                        <h3><i class="fas fa-image"></i> Image Originale (Preprocessed)</h3>
+                        <img id="originalImage" src="" alt="Image originale">
+                    </div>
+                    <div class="image-box">
+                        <h3><i class="fas fa-robot"></i> Segmentation IA</h3>
+                        <img id="segmentationMask" src="" alt="Masque de segmentation">
+                    </div>
+                </div>
+
+                <div class="metrics-container">
+                    <div class="metric-card">
+                        <div class="metric-label">🎯 Confiance</div>
+                        <div class="metric-value" id="confidenceValue">--</div>
+                        <div class="metric-desc">Score de certitude</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">📏 Surface Lésion</div>
+                        <div class="metric-value" id="surfaceValue">--</div>
+                        <div class="metric-desc">Pourcentage détecté</div>
+                    </div>
+                    <div class="metric-card" id="riskCard">
+                        <div class="metric-label">⚠️ Niveau de Risque</div>
+                        <div class="metric-value" id="riskValue">--</div>
+                        <div class="metric-desc">Évaluation IA</div>
+                    </div>
+                </div>
+
+                <div class="recommendation">
+                    <i class="fas fa-info-circle"></i> 
+                    <span id="recommendationText">Consultez un dermatologue pour un diagnostic professionnel</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <span class="footer-logo">Les applications de l'intelligence artificielle</span>
+        <p>Smail EL OUARDI - Ilyass HASSOUNI - Abdelhamid BOUSLIH</p>
+        <p>&copy; EST Khénifra - Filière IDIA Semestre 4 - 2025/2026</p>
+    </footer>
+
+    <script>
+        const uploadBtn = document.getElementById('uploadBtn');
+        const fileInput = document.getElementById('fileInput');
+        const loading = document.getElementById('loading');
+        const errorMessage = document.getElementById('errorMessage');
+        const resultsSection = document.getElementById('resultsSection');
+
+        uploadBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', async function() {
+            const file = this.files[0];
+            if (!file) return;
+
+            errorMessage.classList.remove('visible');
+            resultsSection.classList.remove('visible');
+            loading.classList.add('visible');
+            uploadBtn.disabled = true;
+            uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyse en cours...';
+
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('originalImage').src = data.original_image;
+                    document.getElementById('segmentationMask').src = data.segmentation_mask;
+                    document.getElementById('confidenceValue').textContent = data.metrics.confidence + '%';
+                    document.getElementById('surfaceValue').textContent = data.metrics.surface + '%';
+                    document.getElementById('riskValue').textContent = data.metrics.risk;
+
+                    const riskCard = document.getElementById('riskCard');
+                    riskCard.style.borderLeftColor = data.metrics.risk_color;
+                    document.getElementById('riskValue').style.color = data.metrics.risk_color;
+
+                    let recommendation = "Consultez un dermatologue pour un diagnostic professionnel";
+                    if (data.metrics.risk === "Élevé") {
+                        recommendation = "⚠️ Surface importante détectée. Consultation dermatologique recommandée rapidement.";
+                    } else if (data.metrics.risk === "Modéré") {
+                        recommendation = "Surface modérée détectée. Surveillance conseillée.";
+                    }
+                    document.getElementById('recommendationText').textContent = recommendation;
+
+                    resultsSection.classList.add('visible');
+                } else {
+                    errorMessage.textContent = 'Erreur: ' + (data.error || 'Erreur inconnue');
+                    errorMessage.classList.add('visible');
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                errorMessage.textContent = 'Erreur de connexion au serveur: ' + error.message;
+                errorMessage.classList.add('visible');
+            } finally {
+                loading.classList.remove('visible');
+                uploadBtn.disabled = false;
+                uploadBtn.innerHTML = '<i class="fas fa-upload"></i> Analyser une autre image';
+            }
+        });
+    </script>
+</body>
+</html>
